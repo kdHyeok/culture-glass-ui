@@ -26,19 +26,22 @@ function RootLayout() {
   );
 }
 
-export const router = createBrowserRouter([
-  {
-    path: '/components',
-    Component: ComponentLibrary,
-  },
-  {
-    path: '/',
-    Component: RootLayout,
-    children: [
-      { index: true, Component: Home },
-      { path: 'map', Component: MapPage },
-      { path: 'diary', Component: Diary },
-      { path: 'settings', Component: Settings },
-    ],
-  },
-]);
+export const router = createBrowserRouter(
+  [
+    {
+      path: '/components',
+      Component: ComponentLibrary,
+    },
+    {
+      path: '/',
+      Component: RootLayout,
+      children: [
+        { index: true, Component: Home },
+        { path: 'map', Component: MapPage },
+        { path: 'diary', Component: Diary },
+        { path: 'settings', Component: Settings },
+      ],
+    },
+  ],
+  { basename: import.meta.env.BASE_URL },
+);
