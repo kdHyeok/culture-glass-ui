@@ -1,9 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
-import { Globe, User, Accessibility, ChevronRight } from 'lucide-react';
+import { Globe, User, Accessibility, Bluetooth, Camera, ChevronRight, MapPin, Mic } from 'lucide-react';
+import { ProfileSetupSheet } from '../components/settings/ProfileSetupSheet';
+
+type PermissionStatus = 'allowed' | 'partial' | 'denied';
+
+const permissionStatusLabels: Record<PermissionStatus, string> = {
+  allowed: '허용됨',
+  partial: '일부 허용',
+  denied: '허용 안함',
+};
 
 export function Settings() {
-  const { language, setLanguage, isSeniorMode, setIsSeniorMode, ageGroup, setAgeGroup } = useAppContext();
+  const { language, setLanguage, profileName, isSeniorMode, setIsSeniorMode, birthYear, birthMonth, birthDay, gender } = useAppContext();
+  const [isProfileSheetOpen, setIsProfileSheetOpen] = useState(false);
+  const [permissions, setPermissions] = useState<Record<string, PermissionStatus>>({
+    camera: 'allowed',
+    microphone: 'allowed',
+    location: 'partial',
+    bluetooth: 'denied',
+  });
+
+  const permissionItems = [
+    { id: 'camera', label: '카메라 접근', icon: <Camera size={20} className="text-muted-foreground" /> },
+    { id: 'microphone', label: '마이크 접근', icon: <Mic size={20} className="text-muted-foreground" /> },
+    { id: 'location', label: '위치 정보', icon: <MapPin size={20} className="text-muted-foreground" /> },
+    { id: 'bluetooth', label: '블루투스 접근', icon: <Bluetooth size={20} className="text-muted-foreground" /> },
+  ];
+  const genderLabel = gender === 'female' ? '여성' : gender === 'male' ? '남성' : gender === 'other' ? '기타' : '';
+  const birthDateLabel = birthYear && birthMonth && birthDay ? `${birthYear}.${birthMonth}.${birthDay}` : '생년월일 미설정';
+  const profileSummary = [birthDateLabel, genderLabel].filter(Boolean).join(' · ');
 
   return (
     <div className="flex flex-col h-full bg-background overflow-y-auto pb-24">
@@ -16,18 +42,22 @@ export function Settings() {
         <section>
           <h2 className="text-sm font-semibold text-primary mb-3 uppercase tracking-wider">프로필</h2>
           <div className="bg-white rounded-[20px] shadow-sm border border-border overflow-hidden">
-            <div className="px-5 py-4 flex items-center justify-between border-b border-border">
+            <button
+              type="button"
+              onClick={() => setIsProfileSheetOpen(true)}
+              className="flex w-full items-center justify-between border-b border-border px-5 py-4 text-left transition-colors active:bg-muted"
+            >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center text-muted-foreground">
                   <User size={20} />
                 </div>
                 <div>
-                  <p className="text-base font-medium text-foreground">관람객</p>
-                  <p className="text-xs text-muted-foreground">{ageGroup || '연령 미설정'}</p>
+                  <p className="text-base font-medium text-foreground">{profileName}</p>
+                  <p className="text-xs text-muted-foreground">{profileSummary}</p>
                 </div>
               </div>
               <ChevronRight size={20} className="text-muted-foreground" />
-            </div>
+            </button>
           </div>
         </section>
 
@@ -76,15 +106,35 @@ export function Settings() {
         <section>
           <h2 className="text-sm font-semibold text-primary mb-3 uppercase tracking-wider">권한 관리</h2>
           <div className="bg-white rounded-[20px] shadow-sm border border-border overflow-hidden">
-            {['카메라 접근', '마이크 접근', '위치 정보'].map((perm, i) => (
-              <div key={perm} className={`px-5 py-4 flex items-center justify-between ${i !== 2 ? 'border-b border-border' : ''}`}>
-                <span className="text-base font-medium text-foreground">{perm}</span>
-                <span className="text-sm text-primary font-medium">허용됨</span>
+            {permissionItems.map((permission, index) => (
+              <div key={permission.id} className={`px-5 py-4 flex items-center justify-between gap-4 ${index !== permissionItems.length - 1 ? 'border-b border-border' : ''}`}>
+                <div className="flex min-w-0 items-center space-x-3">
+                  {permission.icon}
+                  <span className="text-base font-medium text-foreground">{permission.label}</span>
+                </div>
+                <select
+                  value={permissions[permission.id]}
+                  onChange={(event) =>
+                    setPermissions((current) => ({
+                      ...current,
+                      [permission.id]: event.target.value as PermissionStatus,
+                    }))
+                  }
+                  className="min-w-[104px] rounded-full border border-border bg-muted/40 px-3 py-1.5 text-right text-sm font-semibold text-primary outline-none focus:border-primary focus:bg-white"
+                  aria-label={`${permission.label} 권한 상태`}
+                >
+                  {Object.entries(permissionStatusLabels).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
               </div>
             ))}
           </div>
         </section>
       </div>
+      <ProfileSetupSheet open={isProfileSheetOpen} onClose={() => setIsProfileSheetOpen(false)} />
     </div>
   );
 }
