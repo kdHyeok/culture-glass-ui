@@ -26,8 +26,12 @@ interface AppContextType {
   setGender: (gender: Gender) => void;
   isOnboarded: boolean;
   setIsOnboarded: (val: boolean) => void;
+  isLoggedIn: boolean;
+  setIsLoggedIn: (value: boolean) => void;
   isCameraMicActive: boolean;
   setIsCameraMicActive: (active: boolean) => void;
+  isAnalyzing: boolean;
+  setIsAnalyzing: (val: boolean) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -44,7 +48,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [birthDay, setBirthDay] = useState<string>('');
   const [gender, setGender] = useState<Gender>('');
   const [isOnboarded, setIsOnboarded] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCameraMicActive, setIsCameraMicActive] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   return (
     <AppContext.Provider
@@ -71,8 +77,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         setGender,
         isOnboarded,
         setIsOnboarded,
+        isLoggedIn,
+        setIsLoggedIn,
         isCameraMicActive,
         setIsCameraMicActive,
+        isAnalyzing,
+        setIsAnalyzing,
       }}
     >
       {children}

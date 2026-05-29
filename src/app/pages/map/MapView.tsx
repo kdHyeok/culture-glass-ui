@@ -4,6 +4,7 @@ import { Calendar, Compass, LocateFixed, MessageCircle, Minus, Navigation, Plus,
 import { useSearchParams } from 'react-router';
 import { ImageWithFallback } from '../../components/figma/ImageWithFallback';
 import { SharedMicWaveform } from '../../components/SharedMicWaveform';
+import { VisitDetailSheet } from '../../components/diary/VisitDetailSheet';
 import { nearbyPlaces, visitRecords, type VisitRecord } from '../../data/visitRecords';
 
 type Point = { x: number; y: number };
@@ -230,7 +231,18 @@ export function MapView() {
         onResetZoom={() => setZoom(DEFAULT_ZOOM)}
       />
 
-      <AnimatePresence>{selectedPin && <MapBottomSheet pin={selectedPin} onClose={() => setSelectedPin(null)} />}</AnimatePresence>
+      <AnimatePresence>
+        {selectedPin && (
+          <VisitDetailSheet
+            record={selectedPin}
+            onClose={() => setSelectedPin(null)}
+            onOpenMap={(record) => {
+              setFocusedRecordId(record.id);
+              setSelectedPin(record);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

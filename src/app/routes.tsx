@@ -5,12 +5,18 @@ import { Home } from './pages/Home';
 import { Diary } from './pages/Diary';
 import { MapPage } from './pages/MapPage';
 import { Settings } from './pages/Settings';
+import { SocialLogin } from './pages/SocialLogin';
 import { ComponentLibrary } from './pages/ComponentLibrary';
 import { BottomNav } from './components/BottomNav';
+import { GlobalAnalysisOverlay } from './components/GlobalAnalysisOverlay';
 import { useAppContext } from './context/AppContext';
 
 function RootLayout() {
-  const { isOnboarded, isSeniorMode } = useAppContext();
+  const { isLoggedIn, isOnboarded, isSeniorMode } = useAppContext();
+
+  if (!isLoggedIn) {
+    return <SocialLogin />;
+  }
 
   if (!isOnboarded) {
     return <Onboarding />;
@@ -21,6 +27,7 @@ function RootLayout() {
       <div className="flex-1 overflow-hidden relative">
         <Outlet />
       </div>
+      <GlobalAnalysisOverlay />
       <BottomNav />
     </div>
   );

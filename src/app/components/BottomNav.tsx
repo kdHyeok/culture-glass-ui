@@ -3,6 +3,7 @@ import { NavLink, useLocation } from 'react-router';
 import { Book, Camera, Map, Mic, Settings, Square } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { SharedMicWaveform } from './SharedMicWaveform';
+import { useRef } from 'react';
 
 const navItems = [
   { to: '/map', label: '지도', icon: <Map size={24} /> },
@@ -13,9 +14,10 @@ const navItems = [
 
 export function BottomNav() {
   const location = useLocation();
-  const { isSeniorMode, isCameraMicActive, setIsCameraMicActive } = useAppContext();
+  const { isSeniorMode, isCameraMicActive, setIsCameraMicActive, setIsAnalyzing } = useAppContext();
 
   const toggleCameraMic = () => {
+    // keep behavior handled in CameraMicButton to allow analysis overlay
     setIsCameraMicActive(!isCameraMicActive);
   };
 
@@ -48,17 +50,41 @@ function NavItem({ to, icon, label, active }: { to: string; icon: React.ReactNod
 }
 
 function CameraMicButton({ listening, onToggle }: { listening: boolean; onToggle: () => void }) {
+  const timerRef = useRef<number | null>(null);
+  const { setIsCameraMicActive, setIsAnalyzing } = useAppContext();
+
+  const handleClick = () => {
+    const next = !listening;
+    // toggle mic active
+    setIsCameraMicActive(next);
+    // when starting, show analysis overlay briefly
+    if (next) {
+      setIsAnalyzing(true);
+      if (timerRef.current) window.clearTimeout(timerRef.current);
+      timerRef.current = window.setTimeout(() => {
+        setIsAnalyzing(false);
+        timerRef.current = null;
+      }, 3000);
+    } else {
+      setIsAnalyzing(false);
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    }
+  };
+
   return (
     <div className="relative z-10 flex flex-col items-center justify-end justify-self-center">
       <button
         type="button"
-        onClick={onToggle}
-        className={`relative -mt-4 flex h-[76px] w-[76px] items-center justify-center rounded-full border-[6px] border-white transition-transform active:scale-95 ${
+        onClick={handleClick}
+        className={`relative -mt-10 flex h-[92px] w-[92px] items-center justify-center rounded-full border-[5px] border-white transition-transform active:scale-95 ${
           listening ? 'bg-muted text-muted-foreground shadow-lg' : 'bg-primary text-primary-foreground shadow-xl shadow-primary/30'
         }`}
         aria-label={listening ? '카메라 마이크 정지' : '카메라 마이크 시작'}
       >
-        {listening ? <Square size={27} fill="currentColor" /> : <Mic size={34} />}
+        {listening ? <Square size={28} fill="currentColor" /> : <Mic size={30} />}
       </button>
       <span className={`relative mt-1 text-[10px] font-medium senior-nav-label ${listening ? 'text-muted-foreground' : 'text-primary'}`}>
         {listening ? '정지' : '질문'}

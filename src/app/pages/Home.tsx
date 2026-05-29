@@ -13,7 +13,7 @@ type GuideMessage = {
 };
 
 export function Home() {
-  const { isSeniorMode, setIsSeniorMode, language } = useAppContext();
+  const { isSeniorMode, setIsSeniorMode, language, setLanguage } = useAppContext();
   const [scanState, setScanState] = useState<ScanState>('idle');
 
   const handleTrigger = () => {
@@ -49,9 +49,32 @@ export function Home() {
       </div>
 
       <div className="absolute left-0 right-0 top-12 z-20 flex items-center justify-between px-6">
-        <div className="flex items-center space-x-2 rounded-full border border-white/20 bg-black/30 px-3 py-1.5 text-white backdrop-blur-md">
-          <Globe size={16} />
-          <span className="text-sm font-medium">{language === 'Korean' ? 'KOR' : language === 'English' ? 'ENG' : 'FRA'}</span>
+        <div>
+          {language === 'Korean' ? (
+            <button
+              type="button"
+              onClick={() => setLanguage('English')}
+              className="rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-white/80 hover:bg-white/20"
+            >
+              ENG
+            </button>
+          ) : (
+            <div className="flex items-center gap-2 rounded-full border border-white/20 bg-black/30 px-3 py-1.5 text-white backdrop-blur-md">
+              <div className="flex items-center gap-2">
+                <Globe size={16} />
+                <span className="text-sm font-medium">{language === 'Korean' ? 'KOR' : language === 'English' ? 'ENG' : 'FRA'}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setLanguage('English')}
+                className={`rounded-full px-3 py-1 text-sm font-medium transition ${
+                  language === 'English' ? 'bg-primary text-primary-foreground' : 'bg-white/10 text-white/80 hover:bg-white/20'
+                }`}
+              >
+                ENG
+              </button>
+            </div>
+          )}
         </div>
 
         <button
@@ -114,60 +137,14 @@ export function Home() {
         )}
       </AnimatePresence>
 
-      {(scanState === 'scanning' || scanState === 'analyzing') && <AnalysisOverlay scanning={scanState === 'scanning'} />}
+      {/* GlobalAnalysisOverlay handles analysis UI now via context */}
 
       <AnimatePresence>{scanState === 'guide' && !isSeniorMode && <GuideBottomSheet onClose={closeGuide} />}</AnimatePresence>
     </div>
   );
 }
 
-function AnalysisOverlay({ scanning }: { scanning: boolean }) {
-  return (
-    <div className="pointer-events-none absolute inset-0 z-20 overflow-hidden bg-black/42 backdrop-blur-sm">
-      <div className="absolute inset-0 bg-primary/10" />
-      {scanning && (
-        <>
-          <motion.div
-            initial={{ top: '-18%' }}
-            animate={{ top: '108%' }}
-            transition={{ repeat: Infinity, duration: 1.55, ease: 'easeInOut' }}
-            className="absolute left-0 right-0 h-32 bg-gradient-to-b from-transparent via-primary/36 to-transparent"
-          />
-          <motion.div
-            initial={{ top: '-2%' }}
-            animate={{ top: '102%' }}
-            transition={{ repeat: Infinity, duration: 1.55, ease: 'easeInOut' }}
-            className="absolute left-0 right-0 h-1 bg-primary shadow-[0_0_24px_rgba(91,140,122,0.95)]"
-          />
-          <motion.div
-            initial={{ opacity: 0.16 }}
-            animate={{ opacity: [0.16, 0.34, 0.16] }}
-            transition={{ repeat: Infinity, duration: 1.55, ease: 'easeInOut' }}
-            className="absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,rgba(91,140,122,0.16)_50%,transparent_100%)]"
-          />
-        </>
-      )}
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-        <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-white/15 bg-white/10 text-primary backdrop-blur-md">
-          <ScanLine className="h-8 w-8 animate-pulse" />
-        </div>
-        <p className="text-lg font-semibold tracking-wide text-white">문화유산 분석 중...</p>
-        <p className="mt-2 text-sm text-white/72">{scanning ? '화면 전체에서 형태와 문양을 스캔하고 있습니다.' : '가이드 스크립트를 생성하고 있습니다.'}</p>
-        <div className="mt-5 flex items-center gap-1.5">
-          {[0, 1, 2].map((index) => (
-            <motion.span
-              key={index}
-              animate={{ opacity: [0.25, 1, 0.25], y: [0, -4, 0] }}
-              transition={{ repeat: Infinity, duration: 0.9, delay: index * 0.16, ease: 'easeInOut' }}
-              className="h-2.5 w-2.5 rounded-full bg-primary"
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function GuideBottomSheet({ onClose }: { onClose: () => void }) {
   const [isMuted, setIsMuted] = useState(false);
