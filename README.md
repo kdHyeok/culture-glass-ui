@@ -1,7 +1,7 @@
 
-  # 제목 없음
+  # ?�목 ?�음
 
-  This is a code bundle for 제목 없음. The original project is available at https://www.figma.com/design/UDKknaKGDoJRDoB3U0oi09/%EC%A0%9C%EB%AA%A9-%EC%97%86%EC%9D%8C.
+  This is a Vite React app.
 
   ## Running the code
 

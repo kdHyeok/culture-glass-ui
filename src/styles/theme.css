@@ -1,5 +1,3 @@
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
-
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -176,4 +174,114 @@
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
+
+  .senior-mode {
+    font-size: 1.16rem;
+  }
+
+  .senior-mode .text-\[10px\] {
+    font-size: 0.82rem;
+  }
+
+  .senior-mode .text-\[11px\] {
+    font-size: 0.88rem;
+  }
+
+  .senior-mode .text-xs {
+    font-size: 0.9rem;
+  }
+
+  .senior-mode .text-sm,
+  .senior-mode .text-\[13px\],
+  .senior-mode .text-\[14\.5px\] {
+    font-size: 1rem;
+  }
+
+  .senior-mode .text-\[15px\],
+  .senior-mode .text-base {
+    font-size: 1.08rem;
+  }
+
+  .senior-mode .text-\[16px\],
+  .senior-mode .text-\[17px\],
+  .senior-mode .text-lg {
+    font-size: 1.22rem;
+  }
+
+  .senior-mode .text-xl {
+    font-size: 1.42rem;
+  }
+
+  .senior-mode .text-2xl,
+  .senior-mode .text-\[26px\] {
+    font-size: 1.75rem;
+  }
+
+  .senior-mode .text-3xl {
+    font-size: 2.15rem;
+  }
+
+  .senior-mode .senior-nav-label {
+    font-size: 0.9rem;
+    line-height: 1.2;
+  }
+}
+
+html.senior-mode-enabled {
+  font-size: 18px;
+}
+
+html.senior-mode-enabled .senior-mode {
+  font-size: 1.18rem;
+}
+
+html.senior-mode-enabled .senior-mode .text-\[10px\] {
+  font-size: 0.9rem !important;
+}
+
+html.senior-mode-enabled .senior-mode .text-\[11px\],
+html.senior-mode-enabled .senior-mode .text-xs {
+  font-size: 0.98rem !important;
+}
+
+html.senior-mode-enabled .senior-mode .text-sm,
+html.senior-mode-enabled .senior-mode .text-\[13px\],
+html.senior-mode-enabled .senior-mode .text-\[14\.5px\] {
+  font-size: 1.08rem !important;
+}
+
+html.senior-mode-enabled .senior-mode .text-\[15px\],
+html.senior-mode-enabled .senior-mode .text-base {
+  font-size: 1.18rem !important;
+}
+
+html.senior-mode-enabled .senior-mode .text-\[16px\],
+html.senior-mode-enabled .senior-mode .text-\[17px\],
+html.senior-mode-enabled .senior-mode .text-lg {
+  font-size: 1.32rem !important;
+}
+
+html.senior-mode-enabled .senior-mode .text-xl {
+  font-size: 1.5rem !important;
+}
+
+html.senior-mode-enabled .senior-mode .text-2xl,
+html.senior-mode-enabled .senior-mode .text-\[26px\] {
+  font-size: 1.9rem !important;
+}
+
+html.senior-mode-enabled .senior-mode .text-3xl {
+  font-size: 2.28rem !important;
+}
+
+html.senior-mode-enabled .senior-mode button,
+html.senior-mode-enabled .senior-mode input,
+html.senior-mode-enabled .senior-mode select,
+html.senior-mode-enabled .senior-mode textarea {
+  font-size: 1.08rem;
+}
+
+html.senior-mode-enabled .senior-mode .senior-nav-label {
+  font-size: 1rem !important;
+  line-height: 1.2;
 }

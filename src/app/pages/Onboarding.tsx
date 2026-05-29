@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { ChevronRight, Globe, User, Compass } from 'lucide-react';
 import { motion } from 'motion/react';
+import { BirthDateFields } from '../components/profile/BirthDateFields';
 
 export function Onboarding() {
   const { 
     language, setLanguage, 
-    ageGroup, setAgeGroup, 
+    birthYear, setBirthYear,
+    birthMonth, setBirthMonth,
+    birthDay, setBirthDay,
+    gender, setGender,
     interests, setInterests,
     setIsOnboarded 
   } = useAppContext();
@@ -52,19 +56,39 @@ export function Onboarding() {
             </div>
           </section>
 
-          {/* Age Group */}
+          {/* Birth Date */}
           <section>
             <div className="flex items-center space-x-2 mb-4 text-foreground">
               <User size={20} className="text-primary" />
-              <h2 className="text-lg font-medium">연령대</h2>
+              <h2 className="text-lg font-medium">생년월일</h2>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              {['20대 이하', '30-40대', '50-60대', '70대 이상'].map((age) => (
-                <SelectionCard 
-                  key={age}
-                  label={age}
-                  selected={ageGroup === age}
-                  onClick={() => setAgeGroup(age)}
+            <BirthDateFields
+              year={birthYear}
+              month={birthMonth}
+              day={birthDay}
+              onYearChange={setBirthYear}
+              onMonthChange={setBirthMonth}
+              onDayChange={setBirthDay}
+            />
+          </section>
+
+          {/* Gender */}
+          <section>
+            <div className="flex items-center space-x-2 mb-4 text-foreground">
+              <User size={20} className="text-primary" />
+              <h2 className="text-lg font-medium">성별</h2>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { value: 'female', label: '여성' },
+                { value: 'male', label: '남성' },
+                { value: 'other', label: '기타' },
+              ].map((option) => (
+                <SelectionCard
+                  key={option.value}
+                  label={option.label}
+                  selected={gender === option.value}
+                  onClick={() => setGender(option.value as any)}
                 />
               ))}
             </div>
