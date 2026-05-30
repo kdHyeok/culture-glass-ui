@@ -66,6 +66,14 @@ export const componentInventory: ComponentInventoryItem[] = [
     notes: 'Bottom-sheet editor for onboarding-backed profile preferences such as language, birth date, gender, and interests.',
   },
   {
+    name: 'DeviceConnectionSheet',
+    category: 'app',
+    path: 'src/app/components/settings/DeviceConnectionSheet.tsx',
+    group: 'Settings',
+    status: 'needs-preview',
+    notes: 'Bottom-sheet device connection flow used by Settings device preferences.',
+  },
+  {
     name: 'BirthDateFields',
     category: 'app',
     path: 'src/app/components/profile/BirthDateFields.tsx',

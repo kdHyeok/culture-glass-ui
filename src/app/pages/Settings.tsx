@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { Globe, User, Accessibility, Bluetooth, Camera, ChevronRight, MapPin, Mic } from 'lucide-react';
+import { DeviceConnectionSheet } from '../components/settings/DeviceConnectionSheet';
 import { ProfileSetupSheet } from '../components/settings/ProfileSetupSheet';
 
 type PermissionStatus = 'allowed' | 'partial' | 'denied';
@@ -14,6 +15,8 @@ const permissionStatusLabels: Record<PermissionStatus, string> = {
 export function Settings() {
   const { language, setLanguage, profileName, isSeniorMode, setIsSeniorMode, birthYear, birthMonth, birthDay, gender } = useAppContext();
   const [isProfileSheetOpen, setIsProfileSheetOpen] = useState(false);
+  const [isDeviceSheetOpen, setIsDeviceSheetOpen] = useState(false);
+  const [connectedDeviceName, setConnectedDeviceName] = useState('');
   const [permissions, setPermissions] = useState<Record<string, PermissionStatus>>({
     camera: 'allowed',
     microphone: 'allowed',
@@ -30,6 +33,7 @@ export function Settings() {
   const genderLabel = gender === 'female' ? '여성' : gender === 'male' ? '남성' : gender === 'other' ? '기타' : '';
   const birthDateLabel = birthYear && birthMonth && birthDay ? `${birthYear}.${birthMonth}.${birthDay}` : '생년월일 미설정';
   const profileSummary = [birthDateLabel, genderLabel].filter(Boolean).join(' · ');
+  const isDeviceConnected = Boolean(connectedDeviceName);
 
   return (
     <div className="flex flex-col h-full bg-background overflow-y-auto pb-24">
@@ -83,7 +87,7 @@ export function Settings() {
             </div>
 
             {/* Accessibility */}
-            <div className="px-5 py-4 flex items-center justify-between">
+            <div className="px-5 py-4 flex items-center justify-between border-b border-border">
               <div className="flex items-center space-x-3">
                 <Accessibility size={20} className="text-muted-foreground" />
                 <div>
@@ -99,6 +103,26 @@ export function Settings() {
                 <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-all shadow-sm ${isSeniorMode ? 'left-6' : 'left-0.5'}`} />
               </button>
             </div>
+
+            <button
+              type="button"
+              onClick={() => setIsDeviceSheetOpen(true)}
+              className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors active:bg-muted"
+            >
+              <div className="flex min-w-0 items-center space-x-3">
+                <Bluetooth size={20} className="text-muted-foreground" />
+                <div className="min-w-0">
+                  <span className="block text-base font-medium text-foreground">디바이스 연결</span>
+                  <span className="block truncate text-xs text-muted-foreground">{isDeviceConnected ? connectedDeviceName : '디바이스 없음'}</span>
+                </div>
+              </div>
+              <div className="flex shrink-0 items-center gap-2">
+                <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${isDeviceConnected ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
+                  {isDeviceConnected ? '연결됨' : '안됨'}
+                </span>
+                <ChevronRight size={18} className="text-muted-foreground" />
+              </div>
+            </button>
           </div>
         </section>
 
@@ -135,6 +159,14 @@ export function Settings() {
         </section>
       </div>
       <ProfileSetupSheet open={isProfileSheetOpen} onClose={() => setIsProfileSheetOpen(false)} />
+      <DeviceConnectionSheet
+        open={isDeviceSheetOpen}
+        connected={isDeviceConnected}
+        deviceName={connectedDeviceName}
+        onConnect={(deviceName) => setConnectedDeviceName(deviceName)}
+        onDisconnect={() => setConnectedDeviceName('')}
+        onClose={() => setIsDeviceSheetOpen(false)}
+      />
     </div>
   );
 }

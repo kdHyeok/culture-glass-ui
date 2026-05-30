@@ -363,6 +363,9 @@ function MarkerOverviewLayer({
           <button
             key={item.id}
             type="button"
+            onPointerDown={(event) => {
+              event.stopPropagation();
+            }}
             onClick={(event) => {
               event.stopPropagation();
               onSelectPin(item);
@@ -398,6 +401,9 @@ function DetailedStructureLayer({ focusedRecordId, onSelectPin }: { focusedRecor
           <button
             key={item.id}
             type="button"
+            onPointerDown={(event) => {
+              event.stopPropagation();
+            }}
             onClick={(event) => {
               event.stopPropagation();
               onSelectPin(item);
